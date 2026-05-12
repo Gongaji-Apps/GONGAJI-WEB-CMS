@@ -213,8 +213,26 @@ export default function ArticleViewDynamic() {
                     dangerouslySetInnerHTML={{ __html: article.article_content }}
                 />
             ) : (
-                <p className="text-500 font-italic">Tidak ada konten.</p>
+                <p className="text-500 font-italic">Article content belum tersedia.</p>
+            )}
+
+            {article.article_description && (
+                <div className="mb-4 mt-4">
+                    <Divider />
+                    <h4 className="text-lg font-semibold mb-2 text-color-secondary">Description</h4>
+                    <div
+                        className="article-description line-height-3 p-3 border-round-lg"
+                        style={{
+                            fontSize: '1rem',
+                            color: 'var(--text-color)',
+                            backgroundColor: 'var(--surface-50)',
+                            border: '1px solid var(--surface-200)'
+                        }}
+                        dangerouslySetInnerHTML={{ __html: article.article_description }}
+                    />
+                </div>
             )}
         </div>
     );
 }
+
