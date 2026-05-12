@@ -7,20 +7,20 @@ import { Button } from 'primereact/button';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import { Toast } from 'primereact/toast';
 
-import { getMerchantCategories } from '@/features/store/services/storeService';
-import StoreMerchantCategoryDetails from '@/features/store/components/StoreMerchantCategoryDetails';
-import type { StoreMerchantCategory } from '@/features/store/types';
+import { getMerchantBanners } from '@/features/store/services/storeService';
+import StoreMerchantBannerDetails from '@/features/store/components/StoreMerchantBannerDetails';
+import type { StoreMerchantBanner } from '@/features/store/types';
 
-export default function StoreMerchantCategoryViewPage() {
+export default function StoreMerchantBannerView() {
     const params = useParams();
     const router = useRouter();
     const toastRef = useRef<Toast>(null);
 
-    const uuidParam = params?.merchantc_uuid;
+    const uuidParam = params?.['merchant-b-uuid'];
     const uuid = Array.isArray(uuidParam) ? uuidParam[0] : uuidParam;
 
     const [loading, setLoading] = useState(true);
-    const [category, setCategory] = useState<StoreMerchantCategory | null>(null);
+    const [banner, setBanner] = useState<StoreMerchantBanner | null>(null);
 
     useEffect(() => {
         const load = async () => {
@@ -28,21 +28,17 @@ export default function StoreMerchantCategoryViewPage() {
                 if (!uuid) return;
                 setLoading(true);
 
-                const byUuid = await getMerchantCategories({ merchantc_uuid: uuid as string, type_search: 'first' });
+                const byUuid = await getMerchantBanners({ merchantb_uuid: uuid as string, type_search: 'first' });
                 const foundByUuid = byUuid?.[0] ?? null;
                 if (foundByUuid) {
-                    setCategory(foundByUuid);
+                    setBanner(foundByUuid);
                     return;
                 }
 
-                const byName = await getMerchantCategories({ merchantc_name: uuid as string, type_search: 'first' });
-                setCategory(byName?.[0] ?? null);
+                const byTitle = await getMerchantBanners({ merchantb_title: uuid as string, type_search: 'first' });
+                setBanner(byTitle?.[0] ?? null);
             } catch (e: any) {
-                toastRef.current?.show({
-                    severity: 'error',
-                    summary: 'Gagal',
-                    detail: e?.message || 'Tidak bisa memuat merchant category'
-                });
+                toastRef.current?.show({ severity: 'error', summary: 'Gagal', detail: e?.message || 'Tidak bisa memuat banner' });
             } finally {
                 setLoading(false);
             }
@@ -59,12 +55,12 @@ export default function StoreMerchantCategoryViewPage() {
         );
     }
 
-    if (!category) {
+    if (!banner) {
         return (
             <div className="card flex flex-column align-items-center justify-content-center py-8 gap-3">
                 <i className="pi pi-file-excel text-6xl text-400" />
-                <h4 className="m-0 text-700">Merchant category tidak ditemukan</h4>
-                <Button label="Kembali" icon="pi pi-arrow-left" outlined onClick={() => router.push('/store/merchant-categories')} />
+                <h4 className="m-0 text-700">Merchant banner tidak ditemukan</h4>
+                <Button label="Kembali" icon="pi pi-arrow-left" outlined onClick={() => router.push('/store/merchant-banners')} />
             </div>
         );
     }
@@ -72,8 +68,7 @@ export default function StoreMerchantCategoryViewPage() {
     return (
         <>
             <Toast ref={toastRef} />
-            <StoreMerchantCategoryDetails category={category} onBack={() => router.push('/store/merchant-categories')} />
+            <StoreMerchantBannerDetails banner={banner} onBack={() => router.push('/store/merchant-banners')} />
         </>
     );
 }
-
