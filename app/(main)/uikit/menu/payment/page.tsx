@@ -1,15 +1,14 @@
-'use client';
-import React from 'react';
-import Menu from '../page';
-function PaymentDemo() {
+import MenuDemo from '@/components/ui/MenuDemo';
+
+const PaymentDemo = () => {
     return (
-        <Menu>
-            <div className="flex align-items-center py-5 px-3">
-                <i className="pi pi-fw pi-money-bill mr-2 text-2xl" />
-                <p className="m-0 text-lg">Payment Component Content via Child Route</p>
+        <MenuDemo>
+            <div className="card">
+                <h1>Payment Page</h1>
+                <p>This is the payment page content.</p>
             </div>
-        </Menu>
+        </MenuDemo>
     );
-}
+};
 
 export default PaymentDemo;

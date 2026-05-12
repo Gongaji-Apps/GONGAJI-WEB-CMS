@@ -1,16 +1,14 @@
-'use client';
+import MenuDemo from '@/components/ui/MenuDemo';
 
-import React from 'react';
-import Menu from '../page';
-function SeatDemo() {
+const SeatDemo = () => {
     return (
-        <Menu>
-            <div className="flex align-items-center py-5 px-3">
-                <i className="pi pi-fw pi-ticket mr-2 text-2xl" />
-                <p className="m-0 text-lg">Seat Component Content via Child Route</p>
+        <MenuDemo>
+            <div className="card">
+                <h1>Seat Selection Page</h1>
+                <p>This is the seat selection page content.</p>
             </div>
-        </Menu>
+        </MenuDemo>
     );
-}
+};
 
 export default SeatDemo;

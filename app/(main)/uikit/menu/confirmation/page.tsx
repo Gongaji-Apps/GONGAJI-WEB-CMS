@@ -1,16 +1,14 @@
-'use client';
+import MenuDemo from '@/components/ui/MenuDemo';
 
-import React from 'react';
-import Menu from '../page';
-function ConfirmationDemo() {
+const ConfirmationDemo = () => {
     return (
-        <Menu>
-            <div className="flex align-items-center py-5 px-3">
-                <i className="pi pi-fw pi-check mr-2 text-2xl" />
-                <p className="m-0 text-lg">Confirmation Component Content via Child Route</p>
+        <MenuDemo>
+            <div className="card">
+                <h1>Confirmation Page</h1>
+                <p>This is the confirmation page content.</p>
             </div>
-        </Menu>
+        </MenuDemo>
     );
-}
+};
 
 export default ConfirmationDemo;
