@@ -2,13 +2,11 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';
-import { Dropdown } from 'primereact/dropdown';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { MultiSelect } from 'primereact/multiselect';
 import HtmlEditor from '@/components/common/HtmlEditor';
 import { getArticleCategories, getArticleTags } from '@/features/articles/services/articleService';
-import { cleanHtmlForEditor } from '@/utils/htmlCleaner';
 import type { Article, ArticleCategory, ArticleTag } from '@/features/articles/types';
 
 type FormValues = Partial<Article>;
@@ -20,12 +18,7 @@ type CreateArticleFormProps = {
   submitLabel: string;
 };
 
-// Status options removed - article status will be managed by backend
-// const statusOptions = [
-//   { label: 'Draft', value: 'DRAFT' },
-//   { label: 'Review', value: 'REVIEW' },
-//   { label: 'Published', value: 'PUBLISHED' }
-// ];
+
 
 export default function CreateArticleForm({ value, onChange, onSubmit, loading, submitLabel }: CreateArticleFormProps) {
   const selectedDate = useMemo(() => (value.article_date ? new Date(value.article_date) : undefined), [value.article_date]);
@@ -83,22 +76,6 @@ export default function CreateArticleForm({ value, onChange, onSubmit, loading, 
             onChange={(e) => onChange('article_slug', e.target.value)}
             placeholder="otomatis dari backend"
             disabled
-          />
-        </div>
-
-        <div className="field mb-4 col-12 md:col-6">
-          <label htmlFor="article_status">Status</label>
-          <Dropdown
-            id="article_status"
-            value={value.article_status ?? 'DRAFT'}
-            options={[
-              { label: 'Draft', value: 'DRAFT' },
-              { label: 'Review', value: 'REVIEW' },
-              { label: 'Published', value: 'PUBLISHED' }
-            ]}
-            optionLabel="label"
-            optionValue="value"
-            onChange={(e) => onChange('article_status', e.value)}
           />
         </div>
 
