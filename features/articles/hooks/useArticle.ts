@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { getArticleBySlug, updateArticle } from '../services/articleService';
+import { getArticleBySlug, updateArticle, deleteArticle } from '../services/articleService';
 import type { Article } from '../types';
 
 // Hook untuk get article by slug dengan caching
@@ -31,6 +31,19 @@ export const useUpdateArticle = () => {
   });
 };
 
+// Hook untuk delete article permanen dengan cache invalidation
+export const useDeleteArticle = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (articleUuid: string) => deleteArticle(articleUuid),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['article'] });
+      queryClient.invalidateQueries({ queryKey: ['articles'] });
+    },
+  });
+};
+
 // Hook untuk get articles list dengan caching
 export const useArticles = (params = {}) => {
   return useQuery({
@@ -40,3 +53,4 @@ export const useArticles = (params = {}) => {
     gcTime: 5 * 60 * 1000, // 5 minutes
   });
 };
+
