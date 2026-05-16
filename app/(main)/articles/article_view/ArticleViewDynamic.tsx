@@ -177,7 +177,7 @@ export default function ArticleViewDynamic() {
                             <i className="pi pi-calendar mr-1 text-400" />
                             {formatDate(
                                 (article.article_published_at as string) ||
-                                    (article.created_at as string)
+                                (article.created_at as string)
                             )}
                         </span>
                     </div>
@@ -204,7 +204,7 @@ export default function ArticleViewDynamic() {
                 </div>
             </div>
 
-            <Divider />
+            {/* <Divider />
 
             {article.article_content ? (
                 <div
@@ -214,7 +214,7 @@ export default function ArticleViewDynamic() {
                 />
             ) : (
                 <p className="text-500 font-italic">Article content belum tersedia.</p>
-            )}
+            )} */}
 
             {article.article_description && (
                 <div className="mb-4 mt-4">
