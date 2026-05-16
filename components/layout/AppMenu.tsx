@@ -26,7 +26,7 @@ const AppMenu = () => {
                     icon: 'pi pi-fw pi-pencil',
                     items: [
                         { label: 'Articles List', icon: 'pi pi-fw pi-list', to: '/articles' },
-                        { label: 'Create Article', icon: 'pi pi-fw pi-plus-circle', to: '/articles/create' },
+                        // { label: 'Create Article', icon: 'pi pi-fw pi-plus-circle', to: '/articles/create' },
                         { label: 'Article Tags', icon: 'pi pi-fw pi-tag', to: '/articles/tags' },
                         { label: 'Article Categories', icon: 'pi pi-fw pi-folder', to: '/articles/categories' }
                     ]
@@ -35,12 +35,13 @@ const AppMenu = () => {
                     label: 'Store',
                     icon: 'pi pi-fw pi-shopping-cart',
                     items: [
-                        { label: 'Store Addresses', icon: 'pi pi-fw pi-map-marker', to: '/store/addresses' },
-                        { label: 'Create Address', icon: 'pi pi-fw pi-plus-circle', to: '/store/addresses/create' },
-                        { label: 'Store Brands', icon: 'pi pi-fw pi-globe', to: '/store/brands' },
-                        { label: 'Store Merchants', icon: 'pi pi-fw pi-shopping-bag', to: '/store/merchants' },
-                        { label: 'Merchant Banners', icon: 'pi pi-fw pi-images', to: '/store/merchant-banners' },
-                        { label: 'Merchant Categories', icon: 'pi pi-fw pi-tags', to: '/store/merchant-categories' }
+                        { label: 'Products', icon: 'pi pi-fw pi-box', to: '/store/products' },
+                        // { label: 'Store Addresses', icon: 'pi pi-fw pi-map-marker', to: '/store/addresses' },
+                        // { label: 'Create Address', icon: 'pi pi-fw pi-plus-circle', to: '/store/addresses/create' },
+                        // { label: 'Store Brands', icon: 'pi pi-fw pi-globe', to: '/store/brands' },
+                        // { label: 'Store Merchants', icon: 'pi pi-fw pi-shopping-bag', to: '/store/merchants' },
+                        // { label: 'Merchant Banners', icon: 'pi pi-fw pi-images', to: '/store/merchant-banners' },
+                        // { label: 'Merchant Categories', icon: 'pi pi-fw pi-tags', to: '/store/merchant-categories' }
                     ]
                 },
                 {
