@@ -14,8 +14,14 @@ import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
 import { Image } from 'primereact/image';
 
 
-import { archiveArticle, getArticleCategories, getArticles, unarchiveArticle } from '@/features/articles/services/articleService';
+import { archiveArticle, changeArticleStatus, deleteArticle, getArticleCategories, getArticles, unarchiveArticle } from '@/features/articles/services/articleService';
 import type { Article, ArticleCategory } from '@/features/articles/types';
+
+const statusOptions = [
+    { label: 'Draft', value: 'DRAFT' },
+    { label: 'Review', value: 'REVIEW' },
+    { label: 'Published', value: 'PUBLISHED' }
+];
 
 export default function ArticlesList() {
     const [articles, setArticles] = useState<Article[]>([]);
@@ -25,6 +31,8 @@ export default function ArticlesList() {
     const [keywordSuggestions, setKeywordSuggestions] = useState<string[]>([]);
     const [statusFilter, setStatusFilter] = useState('');
     const [categoryFilter, setCategoryFilter] = useState('');
+    const [tagFilter, setTagFilter] = useState('');
+    const [changingStatusUuid, setChangingStatusUuid] = useState<string | null>(null);
 
     const router = useRouter();
     const toast = useRef<Toast>(null);
@@ -55,7 +63,7 @@ export default function ArticlesList() {
         loadArticles();
     }, [loadArticles]);
 
-    const onDelete = (articleUuid: string, articleSlug: string) => {
+    const onArchive = (articleUuid: string, articleSlug: string) => {
         confirmDialog({
             message: 'Arsipkan artikel ini?',
             header: 'Konfirmasi',
@@ -68,6 +76,32 @@ export default function ArticlesList() {
                     detail: 'Artikel diarsipkan'
                 });
                 loadArticles();
+            }
+        });
+    };
+
+    const onDeletePermanent = (articleUuid: string) => {
+        confirmDialog({
+            message: 'Hapus artikel ini secara permanen? Tindakan ini tidak dapat dibatalkan.',
+            header: 'Konfirmasi Hapus Permanen',
+            icon: 'pi pi-exclamation-triangle',
+            acceptClassName: 'p-button-danger',
+            accept: async () => {
+                try {
+                    await deleteArticle(articleUuid);
+                    toast.current?.show({
+                        severity: 'success',
+                        summary: 'Berhasil',
+                        detail: 'Artikel berhasil dihapus permanen'
+                    });
+                    loadArticles();
+                } catch (error: any) {
+                    toast.current?.show({
+                        severity: 'error',
+                        summary: 'Gagal',
+                        detail: error?.message || 'Gagal menghapus artikel'
+                    });
+                }
             }
         });
     };
@@ -90,72 +124,164 @@ export default function ArticlesList() {
         }
     };
 
-    const statusBody = (row: Article) => {
-        const value = (row.article_status || '').toUpperCase();
-        const severity =
-            value === 'PUBLISHED'
-                ? 'success'
-                : value === 'REVIEW'
-                ? 'warning'
-                : value === 'ARCHIVED'
-                ? 'danger'
-                : 'info';
+    const onChangeStatus = async (articleUuid: string, newStatus: string, currentStatus: string) => {
+        if (newStatus === currentStatus) return;
 
-        return <Tag value={value || 'DRAFT'} severity={severity} />;
+        confirmDialog({
+            message: `Ubah status artikel menjadi "${newStatus}"?`,
+            header: 'Konfirmasi Ubah Status',
+            icon: 'pi pi-info-circle',
+            accept: async () => {
+                try {
+                    setChangingStatusUuid(articleUuid);
+                    await changeArticleStatus(articleUuid, newStatus);
+                    toast.current?.show({
+                        severity: 'success',
+                        summary: 'Berhasil',
+                        detail: `Status artikel berhasil diubah ke ${newStatus}`
+                    });
+                    loadArticles();
+                } catch (error: any) {
+                    toast.current?.show({
+                        severity: 'error',
+                        summary: 'Gagal',
+                        detail: error?.message || 'Gagal mengubah status artikel'
+                    });
+                } finally {
+                    setChangingStatusUuid(null);
+                }
+            }
+        });
+    };
+
+    const statusBody = (row: Article) => {
+        const currentStatus = (row.article_status || 'DRAFT').toUpperCase();
+        const isArchived = currentStatus === 'ARCHIVED';
+        const isPublished = currentStatus === 'PUBLISHED';
+        const isChanging = changingStatusUuid === row.article_uuid;
+
+        // Archived → static tag
+        if (isArchived) {
+            return <Tag value="ARCHIVED" severity="danger" />;
+        }
+
+        // Published → static tag (no going back)
+        if (isPublished) {
+            return <Tag value="PUBLISHED" severity="success" />;
+        }
+
+        // Determine allowed next status based on current
+        // DRAFT → can only go to REVIEW
+        // REVIEW → can only go to PUBLISHED
+        const allowedOptions =
+            currentStatus === 'DRAFT'
+                ? [
+                    { label: 'Draft', value: 'DRAFT' },
+                    { label: 'Review', value: 'REVIEW' }
+                ]
+                : currentStatus === 'REVIEW'
+                    ? [
+                        { label: 'Review', value: 'REVIEW' },
+                        { label: 'Published', value: 'PUBLISHED' }
+                    ]
+                    : statusOptions;
+
+        return (
+            <div className="flex align-items-center gap-2">
+                <Dropdown
+                    value={currentStatus}
+                    options={allowedOptions}
+                    optionLabel="label"
+                    optionValue="value"
+                    onChange={(e) => onChangeStatus(row.article_uuid || '', e.value, currentStatus)}
+                    disabled={isChanging || !row.article_uuid}
+                    className="w-full"
+                    style={{ minWidth: '130px' }}
+                    itemTemplate={(option) => {
+                        const severity =
+                            option.value === 'PUBLISHED'
+                                ? 'success'
+                                : option.value === 'REVIEW'
+                                    ? 'warning'
+                                    : 'info';
+                        return <Tag value={option.label} severity={severity} />;
+                    }}
+                    valueTemplate={(option) => {
+                        if (!option) return null;
+                        const severity =
+                            option.value === 'PUBLISHED'
+                                ? 'success'
+                                : option.value === 'REVIEW'
+                                    ? 'warning'
+                                    : 'info';
+                        return <Tag value={option.label} severity={severity} />;
+                    }}
+                />
+                {isChanging && <i className="pi pi-spin pi-spinner text-primary" />}
+            </div>
+        );
     };
 
     const titleBody = (row: Article) => {
-    // Penanganan image source
-    const imageSrc =
-        typeof row.article_image === 'string' && row.article_image.trim() !== ''
-            ? row.article_image
-            : '/no-image.png';
+        // Penanganan image source
+        const imageSrc =
+            typeof row.article_image === 'string' && row.article_image.trim() !== ''
+                ? row.article_image
+                : '/no-image.png';
 
-    return (
-        <div className="flex align-items-center gap-3 py-2">
-            {/* Bagian Gambar dengan Fitur Preview & Shadow */}
-            <div className="flex-shrink-0 shadow-2 border-round overflow-hidden" style={{ width: '60px', height: '60px' }}>
-                <Image
-                    src={imageSrc}
-                    alt={row.article_title}
-                    width="60"
-                    height="60"
-                    preview // Memungkinkan gambar diklik untuk diperbesar
-                    imageClassName="object-cover w-full h-full" // Menjaga rasio gambar tetap bagus
-                    className="block"
-                />
-            </div>
-
-            {/* Bagian Teks (Judul & Slug) */}
-            <div className="flex flex-column gap-1 overflow-hidden">
-                {/* Judul Artikel: Tebal, Hitam, dan titik-titik jika kepanjangan */}
-                <div
-                    className="font-bold text-900 text-base line-height-2 overflow-hidden text-overflow-ellipsis white-space-nowrap"
-                    style={{ maxWidth: '280px' }}
-                    title={row.article_title} // Munculkan teks asli saat kursor menempel
-                >
-                    {row.article_title || 'Untitled Article'}
+        return (
+            <div className="flex align-items-center gap-3 py-2">
+                {/* Bagian Gambar dengan Fitur Preview & Shadow */}
+                <div className="flex-shrink-0 shadow-2 border-round overflow-hidden" style={{ width: '60px', height: '60px' }}>
+                    <Image
+                        src={imageSrc}
+                        alt={row.article_title}
+                        width="60"
+                        height="60"
+                        preview // Memungkinkan gambar diklik untuk diperbesar
+                        imageClassName="object-cover w-full h-full" // Menjaga rasio gambar tetap bagus
+                        className="block"
+                    />
                 </div>
 
-                {/* Slug Artikel: Dibuat seperti badge kecil agar lebih rapi */}
-                <div className="flex align-items-center gap-2">
-                    <span
-                        className="text-xs px-2 py-1 border-round-sm surface-200 text-600 font-medium tracking-tight"
-                        style={{ fontSize: '10px', textTransform: 'uppercase' }}
+                {/* Bagian Teks (Judul & Slug) */}
+                <div className="flex flex-column gap-1 overflow-hidden">
+                    {/* Judul Artikel: Tebal, Hitam, dan titik-titik jika kepanjangan */}
+                    <div
+                        className="font-bold text-900 text-base line-height-2 overflow-hidden text-overflow-ellipsis white-space-nowrap"
+                        style={{ maxWidth: '280px' }}
+                        title={row.article_title} // Munculkan teks asli saat kursor menempel
                     >
-                        Slug
-                    </span>
-                    <small
-                        className="text-500 font-mono overflow-hidden text-overflow-ellipsis white-space-nowrap"
-                        style={{ maxWidth: '200px' }}
-                    >
-                        /{row.article_slug || '-'}
-                    </small>
+                        {row.article_title || 'Untitled Article'}
+                    </div>
+
+                    {/* Slug Artikel: Dibuat seperti badge kecil agar lebih rapi */}
+                    <div className="flex align-items-center gap-2">
+                        <span
+                            className="text-xs px-2 py-1 border-round-sm surface-200 text-600 font-medium tracking-tight"
+                            style={{ fontSize: '10px', textTransform: 'uppercase' }}
+                        >
+                            Slug
+                        </span>
+                        <small
+                            className="text-500 font-mono overflow-hidden text-overflow-ellipsis white-space-nowrap"
+                            style={{ maxWidth: '200px' }}
+                        >
+                            /{row.article_slug || '-'}
+                        </small>
+                    </div>
                 </div>
             </div>
-        </div>
+        );
+    };
+
+    const article_tag = (row: Article) => (
+        <span>{Number(row.article_date || 0).toLocaleString('id-ID')}</span>
     );
-};
+
+    const dateBody = (row: Article) => (
+        <span>{Number(row.article_date || 0).toLocaleString('id-ID')}</span>
+    );
 
     const viewsBody = (row: Article) => (
         <span>{Number(row.article_total_view || 0).toLocaleString('id-ID')}</span>
@@ -262,12 +388,14 @@ export default function ArticlesList() {
                 emptyMessage="Belum ada artikel."
             >
 
-            <Column header="Title" body={titleBody} style={{ minWidth: '250px' }} />
-            <Column field="article_author" header="Author" style={{ minWidth: '150px' }} />
-            <Column field="article_category" header="Category" style={{ minWidth: '150px' }} />
-            <Column header="Status" body={statusBody} style={{ minWidth: '120px' }} />
-            <Column header="Views" body={viewsBody} style={{ minWidth: '100px' }} />
-            <Column header="Likes" body={likesBody} style={{ minWidth: '100px' }} />
+                <Column header="Title" body={titleBody} style={{ minWidth: '250px' }} />
+                <Column field="article_author" header="Author" style={{ minWidth: '150px' }} />
+                <Column header="Status" body={statusBody} style={{ minWidth: '160px' }} />
+                <Column field="article_date" body={dateBody} header="Date" style={{ minWidth: '150px' }} />
+                <Column field="article_category" body={categoryFilter} header="Category" style={{ minWidth: '150px' }} />
+                <Column field="article_tag" body={tagFilter} header="Tag" style={{ minWidth: '150px' }} />
+                <Column header="Views" body={viewsBody} style={{ minWidth: '100px' }} />
+                <Column header="Likes" body={likesBody} style={{ minWidth: '100px' }} />
 
                 <Column
                     header="Actions"
@@ -301,9 +429,7 @@ export default function ArticlesList() {
                                             text
                                             severity="danger"
                                             tooltip="Delete Permanently"
-                                            onClick={() => {
-                                                onDelete(row.article_uuid || '', row.article_slug || '');
-                                            }}
+                                            onClick={() => onDeletePermanent(row.article_uuid || '')}
                                             disabled={!row.article_uuid}
                                         />
                                     </>
@@ -320,7 +446,7 @@ export default function ArticlesList() {
                                             text
                                             severity="warning"
                                             tooltip="Archive"
-                                            onClick={() => onDelete(row.article_uuid || '', row.article_slug || '')}
+                                            onClick={() => onArchive(row.article_uuid || '', row.article_slug || '')}
                                             disabled={!row.article_uuid}
                                         />
                                     </>
