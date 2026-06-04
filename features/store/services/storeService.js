@@ -252,3 +252,17 @@ export const getMerchantCategories = async (params = {}) => {
     }
 };
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Products
+
+export const getProducts = async (params = {}) => {
+    try {
+        const response = await api.get(`${BASE_URL_STORE}/v1/product/get`, {
+            ...withStoreVersion('V3'),
+            params: { preload_variant: 'TRUE', ...params }
+        });
+        return asArray(response.data?.data);
+    } catch (error) {
+        throw new Error(extractErrorMessage(error));
+    }
+};
