@@ -73,10 +73,11 @@ react-gongaji-cms-backend/
 
 ## 🔗 External Services
 
-Proyek ini terhubung dengan 3 microservices:
+Proyek ini terhubung dengan 4 microservices:
 - **Authentication Service**: `BASE_URL_AUTH`
 - **Article Service**: `BASE_URL_ARTICLE` 
 - **Store Service**: `BASE_URL_STORE`
+- **QR Service**: `BASE_URL_QR`
 
 ## 🛠️ Development Commands
 
@@ -138,6 +139,8 @@ pnpm lint
 NEXT_PUBLIC_BASE_URL_AUTH=https://gongaji-authentication-service-m3gra3glsq-et.a.run.app
 NEXT_PUBLIC_BASE_URL_ARTICLE=https://gongaji-article-service-m3gra3glsq-et.a.run.app
 NEXT_PUBLIC_BASE_URL_STORE=https://gongaji-store-service-m3gra3glsq-et.a.run.app
+NEXT_PUBLIC_BASE_URL_QR=https://gongaji-qr-service-396261734950.asia-southeast2.run.app
+NEXT_PUBLIC_BASE_URL_QR_BOOK=https://gongaji-qr-service-396261734950.asia-southeast2.run.app
 NEXT_PUBLIC_STATIC_BEARER_TOKEN=
 NEXT_PUBLIC_AUTH_CLIENT_ID=cms-web
 ```
@@ -145,6 +148,7 @@ NEXT_PUBLIC_AUTH_CLIENT_ID=cms-web
 ## 🎯 Current Features
 
 - **Article Management**: CRUD articles dengan categories dan tags
+- **QR Management**: Browse books, contents, series, dan groups dari QR service
 - **Category Management**: Manage article categories
 - **Authentication**: Token-based auth dengan cookie support
 - **File Upload**: Image upload untuk articles
