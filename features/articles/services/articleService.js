@@ -383,9 +383,9 @@ export const updateArticle = async (articleUuid, payload) => {
 
     const formData = buildArticleFormData(payload, { includeDraft: false });
     console.log('FormData entries:');
-Array.from(formData.entries()).forEach(([key, value]) => {
-  console.log(`  ${key}:`, value);
-});
+    Array.from(formData.entries()).forEach(([key, value]) => {
+      console.log(`  ${key}:`, value);
+    });
 
     const response = await api.patch(`${BASE_URL_ARTICLE}/v1/article/update/${articleUuid}`, formData, withVersion('V3'));
     console.log('Update API response:', response.data);
@@ -430,6 +430,18 @@ export const archiveArticle = async (articleUuid, articleSlug) => {
         }
       }
     }
+    throw new Error(extractErrorMessage(error));
+  }
+};
+
+export const deleteArticle = async (articleUuid) => {
+  try {
+    const response = await api.delete(`${BASE_URL_ARTICLE}/v1/article/delete/primary/${articleUuid}`, withVersion('V3'));
+    if (!response.data?.status) {
+      throw new Error(response.data?.message || 'Gagal menghapus artikel');
+    }
+    return true;
+  } catch (error) {
     throw new Error(extractErrorMessage(error));
   }
 };
@@ -504,6 +516,15 @@ const syncArticleStatus = async (articleUuid, status) => {
     console.log('Setting article to draft...');
     await postAction(`${BASE_URL_ARTICLE}/v1/article/draft/${articleUuid}`);
     return;
+  }
+};
+
+export const changeArticleStatus = async (articleUuid, newStatus) => {
+  try {
+    await syncArticleStatus(articleUuid, newStatus);
+    return true;
+  } catch (error) {
+    throw new Error(extractErrorMessage(error));
   }
 };
 
