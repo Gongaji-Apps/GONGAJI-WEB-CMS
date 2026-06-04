@@ -87,3 +87,66 @@ export type StoreMerchantCategory = {
     [key: string]: unknown;
 };
 
+export type ProductAttribute = {
+    producta_product?: string;
+    producta_attribute?: string;
+    name?: string;
+    value?: string;
+};
+
+export type ProductVariant = {
+    variant_uuid?: string;
+    variant_product?: string;
+    variant_sku?: string | null;
+    variant_name?: string;
+    variant_price?: number;
+    variant_stock?: number;
+    variant_weight?: number;
+    variant_image?: string;
+    product_name?: string;
+    merchant_code?: string;
+    merchant_name?: string;
+    merchant_image?: string;
+    discountd_discount_type?: string | null;
+    discountd_value?: number | null;
+    variant_sold?: boolean;
+    variant_has_discount?: boolean | null;
+    variant_discount?: number | null;
+    variant_discount_percent?: number | null;
+    variant_price_after_discount?: number | null;
+    [key: string]: unknown;
+};
+
+export type Product = {
+    product_code?: string;
+    product_merchant?: string;
+    product_brand?: string;
+    product_name?: string;
+    product_caption?: string | null;
+    product_description?: string;
+    product_image?: string;
+    merchant_name?: string;
+    merchant_city?: string;
+    brand_name?: string;
+    product_images?: string[];
+    product_price_min?: number;
+    product_price_max?: number;
+    product_has_discount?: boolean;
+    product_discount?: number;
+    product_discount_min?: number;
+    product_discount_max?: number;
+    product_discount_percent?: number;
+    product_discount_percent_min?: number;
+    product_discount_percent_max?: number;
+    product_price_after_discount_min?: number;
+    product_price_after_discount_max?: number;
+    product_sold?: boolean;
+    product_new?: boolean;
+    product_badge?: string;
+    product_review?: number | null;
+    product_rating?: number | null;
+    product_wishlist?: boolean;
+    product_attribute_fk?: ProductAttribute[];
+    variant_mstr_fk?: ProductVariant[];
+    [key: string]: unknown;
+};
