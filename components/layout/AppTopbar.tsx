@@ -50,6 +50,17 @@ const AppTopbar = forwardRef<AppTopbarRef>((props, ref) => {
                     ]
                 },
                 {
+                    label: 'QR',
+                    icon: 'pi pi-fw pi-qrcode',
+                    items: [
+                        { label: 'QR Books', icon: 'pi pi-fw pi-book', command: () => router.push('/qr/books') },
+                        { label: 'QR Contents', icon: 'pi pi-fw pi-list', command: () => router.push('/qr/contents') },
+                        { label: 'QR Playlist', icon: 'pi pi-fw pi-play', command: () => router.push('/qr/playlist') },
+                        { label: 'QR Series', icon: 'pi pi-fw pi-clone', command: () => router.push('/qr/series') },
+                        { label: 'QR Groups', icon: 'pi pi-fw pi-tags', command: () => router.push('/qr/groups') }
+                    ]
+                },
+                {
                     label: 'Store',
                     icon: 'pi pi-fw pi-shopping-cart',
                     items: [

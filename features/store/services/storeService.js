@@ -1,5 +1,6 @@
 import api from '@/utils/api';
-import { BASE_URL_STORE } from '@/utils/constants';
+import { API_BASE_STORE } from '@/utils/constants';
+import { extractErrorMessage } from '@/utils/extractErrorMessage';
 
 const withStoreVersion = (version) => ({
     headers: {
@@ -7,12 +8,7 @@ const withStoreVersion = (version) => ({
     }
 });
 
-const extractErrorMessage = (error) => {
-    if (error && error.isAxiosError) {
-        return error.response?.data?.message || error.message || 'Terjadi kesalahan dari server';
-    }
-    return error?.message || 'Terjadi kesalahan pada server.';
-};
+const storeError = (error) => extractErrorMessage(error, 'store');
 
 const asArray = (payload) => (Array.isArray(payload) ? payload : []);
 
@@ -54,26 +50,26 @@ const buildAddressFormData = (payload = {}) => {
 
 export const getAddresses = async (params = {}) => {
     try {
-        const response = await api.get(`${BASE_URL_STORE}/v1/address/get`, {
+        const response = await api.get(`${API_BASE_STORE}/v1/address/get`, {
             ...withStoreVersion('V3'),
             params
         });
         return asArray(response.data?.data);
     } catch (error) {
-        throw new Error(extractErrorMessage(error));
+        throw new Error(storeError(error));
     }
 };
 
 export const createAddress = async (payload) => {
     try {
         const formData = buildAddressFormData(payload);
-        const response = await api.post(`${BASE_URL_STORE}/v1/address/create`, formData, withStoreVersion('V3'));
+        const response = await api.post(`${API_BASE_STORE}/v1/address/create`, formData, withStoreVersion('V3'));
         if (!response.data?.status) {
             throw new Error(response.data?.message || 'Gagal membuat address');
         }
         return response.data?.data;
     } catch (error) {
-        throw new Error(extractErrorMessage(error));
+        throw new Error(storeError(error));
     }
 };
 
@@ -81,7 +77,7 @@ export const setMainAddress = async (addressUuid) => {
     try {
         if (!addressUuid) throw new Error('addressUuid wajib diisi');
         const response = await api.post(
-            `${BASE_URL_STORE}/v1/address/set-main/${addressUuid}`,
+            `${API_BASE_STORE}/v1/address/set-main/${addressUuid}`,
             new FormData(),
             withStoreVersion('V3')
         );
@@ -90,7 +86,7 @@ export const setMainAddress = async (addressUuid) => {
         }
         return response.data?.data;
     } catch (error) {
-        throw new Error(extractErrorMessage(error));
+        throw new Error(storeError(error));
     }
 };
 
@@ -99,7 +95,7 @@ export const updateAddress = async (addressUuid, payload) => {
         if (!addressUuid) throw new Error('addressUuid wajib diisi');
         const formData = buildAddressFormData(payload);
         const response = await api.post(
-            `${BASE_URL_STORE}/v1/address/update/${addressUuid}`,
+            `${API_BASE_STORE}/v1/address/update/${addressUuid}`,
             formData,
             withStoreVersion('V3')
         );
@@ -108,20 +104,20 @@ export const updateAddress = async (addressUuid, payload) => {
         }
         return response.data?.data;
     } catch (error) {
-        throw new Error(extractErrorMessage(error));
+        throw new Error(storeError(error));
     }
 };
 
 export const deleteAddress = async (addressUuid) => {
     try {
         if (!addressUuid) throw new Error('addressUuid wajib diisi');
-        const response = await api.delete(`${BASE_URL_STORE}/v1/address/delete/${addressUuid}`, withStoreVersion('V3'));
+        const response = await api.delete(`${API_BASE_STORE}/v1/address/delete/${addressUuid}`, withStoreVersion('V3'));
         if (!response.data?.status) {
             throw new Error(response.data?.message || 'Gagal hapus address');
         }
         return true;
     } catch (error) {
-        throw new Error(extractErrorMessage(error));
+        throw new Error(storeError(error));
     }
 };
 
@@ -130,13 +126,13 @@ export const deleteAddress = async (addressUuid) => {
 
 export const getWishlists = async (params = {}) => {
     try {
-        const response = await api.get(`${BASE_URL_STORE}/v1/wishlist/get`, {
+        const response = await api.get(`${API_BASE_STORE}/v1/wishlist/get`, {
             ...withStoreVersion('V3'),
             params
         });
         return asArray(response.data?.data);
     } catch (error) {
-        throw new Error(extractErrorMessage(error));
+        throw new Error(storeError(error));
     }
 };
 
@@ -150,13 +146,13 @@ export const setWishlist = async (payload) => {
         const formData = new FormData();
         formData.append('wishlist_product', wishlistProduct);
 
-        const response = await api.post(`${BASE_URL_STORE}/v1/wishlist/set`, formData, withStoreVersion('V3'));
+        const response = await api.post(`${API_BASE_STORE}/v1/wishlist/set`, formData, withStoreVersion('V3'));
         if (!response.data?.status) {
             throw new Error(response.data?.message || 'Gagal menyimpan wishlist');
         }
         return response.data?.data;
     } catch (error) {
-        throw new Error(extractErrorMessage(error));
+        throw new Error(storeError(error));
     }
 };
 
@@ -167,13 +163,13 @@ export const deleteWishlistByProduct = async (productUuid) => {
             throw new Error('productUuid wajib diisi');
         }
 
-        const response = await api.delete(`${BASE_URL_STORE}/v1/wishlist/delete-by-product/${product}`, withStoreVersion('V3'));
+        const response = await api.delete(`${API_BASE_STORE}/v1/wishlist/delete-by-product/${product}`, withStoreVersion('V3'));
         if (!response.data?.status) {
             throw new Error(response.data?.message || 'Gagal menghapus wishlist');
         }
         return true;
     } catch (error) {
-        throw new Error(extractErrorMessage(error));
+        throw new Error(storeError(error));
     }
 };
 
@@ -182,73 +178,73 @@ export const deleteWishlistByProduct = async (productUuid) => {
 
 export const getAttributes = async (params = {}) => {
     try {
-        const response = await api.get(`${BASE_URL_STORE}/v1/attribute/get`, {
+        const response = await api.get(`${API_BASE_STORE}/v1/attribute/get`, {
             ...withStoreVersion('V3'),
             params
         });
         return asArray(response.data?.data);
     } catch (error) {
-        throw new Error(extractErrorMessage(error));
+        throw new Error(storeError(error));
     }
 };
 
 export const getBanners = async (params = {}) => {
     try {
-        const response = await api.get(`${BASE_URL_STORE}/v1/banner/get`, {
+        const response = await api.get(`${API_BASE_STORE}/v1/banner/get`, {
             ...withStoreVersion('V3'),
             params
         });
         return asArray(response.data?.data);
     } catch (error) {
-        throw new Error(extractErrorMessage(error));
+        throw new Error(storeError(error));
     }
 };
 
 export const getBrands = async (params = {}) => {
     try {
-        const response = await api.get(`${BASE_URL_STORE}/v1/brand/get`, {
+        const response = await api.get(`${API_BASE_STORE}/v1/brand/get`, {
             ...withStoreVersion('V3'),
             params
         });
         return asArray(response.data?.data);
     } catch (error) {
-        throw new Error(extractErrorMessage(error));
+        throw new Error(storeError(error));
     }
 };
 
 export const getMerchants = async (params = {}) => {
     try {
-        const response = await api.get(`${BASE_URL_STORE}/v1/merchant/get`, {
+        const response = await api.get(`${API_BASE_STORE}/v1/merchant/get`, {
             ...withStoreVersion('V3'),
             params
         });
         return asArray(response.data?.data);
     } catch (error) {
-        throw new Error(extractErrorMessage(error));
+        throw new Error(storeError(error));
     }
 };
 
 export const getMerchantBanners = async (params = {}) => {
     try {
-        const response = await api.get(`${BASE_URL_STORE}/v1/merchant-banner/get`, {
+        const response = await api.get(`${API_BASE_STORE}/v1/merchant-banner/get`, {
             ...withStoreVersion('V3'),
             params
         });
         return asArray(response.data?.data);
     } catch (error) {
-        throw new Error(extractErrorMessage(error));
+        throw new Error(storeError(error));
     }
 };
 
 export const getMerchantCategories = async (params = {}) => {
     try {
-        const response = await api.get(`${BASE_URL_STORE}/v1/merchant-category/get`, {
+        const response = await api.get(`${API_BASE_STORE}/v1/merchant-category/get`, {
             ...withStoreVersion('V3'),
             params
         });
         return asArray(response.data?.data);
     } catch (error) {
-        throw new Error(extractErrorMessage(error));
+        throw new Error(storeError(error));
     }
 };
 
@@ -257,12 +253,12 @@ export const getMerchantCategories = async (params = {}) => {
 
 export const getProducts = async (params = {}) => {
     try {
-        const response = await api.get(`${BASE_URL_STORE}/v1/product/get`, {
+        const response = await api.get(`${API_BASE_STORE}/v1/product/get`, {
             ...withStoreVersion('V3'),
             params: { preload_variant: 'TRUE', ...params }
         });
         return asArray(response.data?.data);
     } catch (error) {
-        throw new Error(extractErrorMessage(error));
+        throw new Error(storeError(error));
     }
 };

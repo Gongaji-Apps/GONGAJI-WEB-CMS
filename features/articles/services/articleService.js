@@ -1,5 +1,6 @@
 import api from '@/utils/api';
-import { BASE_URL_ARTICLE } from '@/utils/constants';
+import { API_BASE_ARTICLE } from '@/utils/constants';
+import { extractErrorMessage } from '@/utils/extractErrorMessage';
 
 const withVersion = (version = 'V3', extra = {}) => ({
   headers: {
@@ -8,12 +9,7 @@ const withVersion = (version = 'V3', extra = {}) => ({
   }
 });
 
-const extractErrorMessage = (error) => {
-  if (error && error.isAxiosError) {
-    return error.response?.data?.message || error.message || 'Terjadi kesalahan dari server';
-  }
-  return error?.message || 'Terjadi kesalahan pada server.';
-};
+const articleError = (error) => extractErrorMessage(error, 'artikel');
 
 const asArray = (payload) => (Array.isArray(payload) ? payload : []);
 
@@ -101,7 +97,7 @@ const buildArticleFormData = (payload = {}, { includeDraft = false } = {}) => {
 
 export const getArticles = async (params = {}) => {
   try {
-    const response = await api.get(`${BASE_URL_ARTICLE}/v1/article/get`, {
+    const response = await api.get(`${API_BASE_ARTICLE}/v1/article/get`, {
       ...withVersion('V3'),
       params: {
         overview: 'TRUE',
@@ -115,19 +111,19 @@ export const getArticles = async (params = {}) => {
     });
     return asArray(response.data?.data).map(normalizeArticle);
   } catch (error) {
-    throw new Error(extractErrorMessage(error));
+    throw new Error(articleError(error));
   }
 };
 
 export const getArticleCategories = async (params = {}) => {
   try {
-    const response = await api.get(`${BASE_URL_ARTICLE}/v1/category/get`, {
+    const response = await api.get(`${API_BASE_ARTICLE}/v1/category/get`, {
       ...withVersion('V3'),
       params
     });
     return asArray(response.data?.data);
   } catch (error) {
-    throw new Error(extractErrorMessage(error));
+    throw new Error(articleError(error));
   }
 };
 
@@ -138,13 +134,13 @@ export const createArticleCategory = async (payload) => {
     if (payload?.category_description) {
       formData.append('category_description', `${payload.category_description}`.trim());
     }
-    const response = await api.post(`${BASE_URL_ARTICLE}/v1/category/create`, formData, withVersion('V3'));
+    const response = await api.post(`${API_BASE_ARTICLE}/v1/category/create`, formData, withVersion('V3'));
     if (!response.data?.status) {
       throw new Error(response.data?.message || 'Gagal membuat category');
     }
     return response.data?.data;
   } catch (error) {
-    throw new Error(extractErrorMessage(error));
+    throw new Error(articleError(error));
   }
 };
 
@@ -155,49 +151,49 @@ export const updateArticleCategory = async (categoryUuid, payload) => {
     if (payload?.category_description) {
       formData.append('category_description', `${payload.category_description}`.trim());
     }
-    const response = await api.patch(`${BASE_URL_ARTICLE}/v1/category/update/${categoryUuid}`, formData, withVersion('V3'));
+    const response = await api.patch(`${API_BASE_ARTICLE}/v1/category/update/${categoryUuid}`, formData, withVersion('V3'));
     if (!response.data?.status) {
       throw new Error(response.data?.message || 'Gagal update category');
     }
     return response.data?.data;
   } catch (error) {
-    throw new Error(extractErrorMessage(error));
+    throw new Error(articleError(error));
   }
 };
 
 export const toggleArticleCategoryActive = async (categoryUuid) => {
   try {
-    const response = await api.patch(`${BASE_URL_ARTICLE}/v1/category/update/active/${categoryUuid}`, new FormData(), withVersion('V3'));
+    const response = await api.patch(`${API_BASE_ARTICLE}/v1/category/update/active/${categoryUuid}`, new FormData(), withVersion('V3'));
     if (!response.data?.status) {
       throw new Error(response.data?.message || 'Gagal ubah status category');
     }
     return response.data?.data;
   } catch (error) {
-    throw new Error(extractErrorMessage(error));
+    throw new Error(articleError(error));
   }
 };
 
 export const deleteArticleCategory = async (categoryUuid) => {
   try {
-    const response = await api.delete(`${BASE_URL_ARTICLE}/v1/category/delete/primary/${categoryUuid}`, withVersion('V3'));
+    const response = await api.delete(`${API_BASE_ARTICLE}/v1/category/delete/primary/${categoryUuid}`, withVersion('V3'));
     if (!response.data?.status) {
       throw new Error(response.data?.message || 'Gagal hapus category');
     }
     return true;
   } catch (error) {
-    throw new Error(extractErrorMessage(error));
+    throw new Error(articleError(error));
   }
 };
 
 export const getArticleTags = async (params = {}) => {
   try {
-    const response = await api.get(`${BASE_URL_ARTICLE}/v1/tag/get`, {
+    const response = await api.get(`${API_BASE_ARTICLE}/v1/tag/get`, {
       ...withVersion('V3'),
       params
     });
     return asArray(response.data?.data);
   } catch (error) {
-    throw new Error(extractErrorMessage(error));
+    throw new Error(articleError(error));
   }
 };
 
@@ -208,13 +204,13 @@ export const createArticleTag = async (payload) => {
     if (payload?.tag_description) {
       formData.append('tag_description', `${payload.tag_description}`.trim());
     }
-    const response = await api.post(`${BASE_URL_ARTICLE}/v1/tag/create`, formData, withVersion('V3'));
+    const response = await api.post(`${API_BASE_ARTICLE}/v1/tag/create`, formData, withVersion('V3'));
     if (!response.data?.status) {
       throw new Error(response.data?.message || 'Gagal membuat tag');
     }
     return response.data?.data;
   } catch (error) {
-    throw new Error(extractErrorMessage(error));
+    throw new Error(articleError(error));
   }
 };
 
@@ -225,43 +221,43 @@ export const updateArticleTag = async (tagUuid, payload) => {
     if (payload?.tag_description) {
       formData.append('tag_description', `${payload.tag_description}`.trim());
     }
-    const response = await api.patch(`${BASE_URL_ARTICLE}/v1/tag/update/${tagUuid}`, formData, withVersion('V3'));
+    const response = await api.patch(`${API_BASE_ARTICLE}/v1/tag/update/${tagUuid}`, formData, withVersion('V3'));
     if (!response.data?.status) {
       throw new Error(response.data?.message || 'Gagal update tag');
     }
     return response.data?.data;
   } catch (error) {
-    throw new Error(extractErrorMessage(error));
+    throw new Error(articleError(error));
   }
 };
 
 export const toggleArticleTagActive = async (tagUuid) => {
   try {
-    const response = await api.patch(`${BASE_URL_ARTICLE}/v1/tag/update/active/${tagUuid}`, new FormData(), withVersion('V3'));
+    const response = await api.patch(`${API_BASE_ARTICLE}/v1/tag/update/active/${tagUuid}`, new FormData(), withVersion('V3'));
     if (!response.data?.status) {
       throw new Error(response.data?.message || 'Gagal ubah status tag');
     }
     return response.data?.data;
   } catch (error) {
-    throw new Error(extractErrorMessage(error));
+    throw new Error(articleError(error));
   }
 };
 
 export const deleteArticleTag = async (tagUuid) => {
   try {
-    const response = await api.delete(`${BASE_URL_ARTICLE}/v1/tag/delete/primary/${tagUuid}`, withVersion('V3'));
+    const response = await api.delete(`${API_BASE_ARTICLE}/v1/tag/delete/primary/${tagUuid}`, withVersion('V3'));
     if (!response.data?.status) {
       throw new Error(response.data?.message || 'Gagal hapus tag');
     }
     return true;
   } catch (error) {
-    throw new Error(extractErrorMessage(error));
+    throw new Error(articleError(error));
   }
 };
 
 export const getArticleById = async (articleUuid) => {
   try {
-    const response = await api.get(`${BASE_URL_ARTICLE}/v1/article/get`, {
+    const response = await api.get(`${API_BASE_ARTICLE}/v1/article/get`, {
       ...withVersion('V3'),
       params: {
         article_uuid: articleUuid,
@@ -280,13 +276,13 @@ export const getArticleById = async (articleUuid) => {
     }
     return article;
   } catch (error) {
-    throw new Error(extractErrorMessage(error));
+    throw new Error(articleError(error));
   }
 };
 
 export const getArticleBySlug = async (slug) => {
   try {
-    const response = await api.get(`${BASE_URL_ARTICLE}/v1/article/get`, {
+    const response = await api.get(`${API_BASE_ARTICLE}/v1/article/get`, {
       ...withVersion('V3'),
       params: {
         article_slug: slug,
@@ -362,7 +358,7 @@ export const getArticleForView = async (slug) => {
 export const createArticle = async (payload) => {
   try {
     const formData = buildArticleFormData(payload, { includeDraft: true });
-    const response = await api.post(`${BASE_URL_ARTICLE}/v1/article/create`, formData, withVersion('V3'));
+    const response = await api.post(`${API_BASE_ARTICLE}/v1/article/create`, formData, withVersion('V3'));
     if (!response.data?.status) {
       throw new Error(response.data?.message || 'Gagal membuat artikel');
     }
@@ -372,7 +368,7 @@ export const createArticle = async (payload) => {
     }
     return response.data?.data;
   } catch (error) {
-    throw new Error(extractErrorMessage(error));
+    throw new Error(articleError(error));
   }
 };
 
@@ -387,7 +383,7 @@ export const updateArticle = async (articleUuid, payload) => {
       console.log(`  ${key}:`, value);
     });
 
-    const response = await api.patch(`${BASE_URL_ARTICLE}/v1/article/update/${articleUuid}`, formData, withVersion('V3'));
+    const response = await api.patch(`${API_BASE_ARTICLE}/v1/article/update/${articleUuid}`, formData, withVersion('V3'));
     console.log('Update API response:', response.data);
 
     if (!response.data?.status) {
@@ -400,14 +396,14 @@ export const updateArticle = async (articleUuid, payload) => {
 
     return response.data?.data;
   } catch (error) {
-    throw new Error(extractErrorMessage(error));
+    throw new Error(articleError(error));
   }
 };
 
 export const archiveArticle = async (articleUuid, articleSlug) => {
   try {
     const response = await api.post(
-      `${BASE_URL_ARTICLE}/v1/article/archived/${articleUuid}`,
+      `${API_BASE_ARTICLE}/v1/article/archived/${articleUuid}`,
       new FormData(),
       withVersion('V2')
     );
@@ -416,12 +412,12 @@ export const archiveArticle = async (articleUuid, articleSlug) => {
     }
     return true;
   } catch (error) {
-    const message = extractErrorMessage(error).toLowerCase();
+    const message = articleError(error).toLowerCase();
     if (articleSlug && message.includes('tidak ditemukan')) {
       const article = await getArticleBySlug(articleSlug);
       if (article?.article_uuid) {
         const retryResponse = await api.post(
-          `${BASE_URL_ARTICLE}/v1/article/archived/${article.article_uuid}`,
+          `${API_BASE_ARTICLE}/v1/article/archived/${article.article_uuid}`,
           new FormData(),
           withVersion('V2')
         );
@@ -430,26 +426,26 @@ export const archiveArticle = async (articleUuid, articleSlug) => {
         }
       }
     }
-    throw new Error(extractErrorMessage(error));
+    throw new Error(articleError(error));
   }
 };
 
 export const deleteArticle = async (articleUuid) => {
   try {
-    const response = await api.delete(`${BASE_URL_ARTICLE}/v1/article/delete/primary/${articleUuid}`, withVersion('V3'));
+    const response = await api.delete(`${API_BASE_ARTICLE}/v1/article/delete/primary/${articleUuid}`, withVersion('V3'));
     if (!response.data?.status) {
       throw new Error(response.data?.message || 'Gagal menghapus artikel');
     }
     return true;
   } catch (error) {
-    throw new Error(extractErrorMessage(error));
+    throw new Error(articleError(error));
   }
 };
 
 export const unarchiveArticle = async (articleUuid) => {
   try {
     const response = await api.post(
-      `${BASE_URL_ARTICLE}/v1/article/unarchived/${articleUuid}`,
+      `${API_BASE_ARTICLE}/v1/article/unarchived/${articleUuid}`,
       new FormData(),
       withVersion('V2')
     );
@@ -458,12 +454,12 @@ export const unarchiveArticle = async (articleUuid) => {
     }
     return true;
   } catch (error) {
-    throw new Error(extractErrorMessage(error));
+    throw new Error(articleError(error));
   }
 };
 
 export const getComments = async (params = {}) => {
-  const response = await api.get(`${BASE_URL_ARTICLE}/v1/comment/get`, { ...withVersion('V2'), params });
+  const response = await api.get(`${API_BASE_ARTICLE}/v1/comment/get`, { ...withVersion('V2'), params });
   return asArray(response.data?.data);
 };
 
@@ -472,7 +468,7 @@ export const createComment = async (payload) => {
   formData.append('comment_article', payload.comment_article);
   formData.append('comment_description', payload.comment_description);
   if (payload.comment_anonim) formData.append('comment_anonim', payload.comment_anonim);
-  const response = await api.post(`${BASE_URL_ARTICLE}/v1/comment/create`, formData, withVersion('V3'));
+  const response = await api.post(`${API_BASE_ARTICLE}/v1/comment/create`, formData, withVersion('V3'));
   return response.data;
 };
 
@@ -481,7 +477,7 @@ export const replyComment = async (payload) => {
   formData.append('comment_parent', payload.comment_parent);
   formData.append('comment_article', payload.comment_article);
   formData.append('comment_description', payload.comment_description);
-  const response = await api.post(`${BASE_URL_ARTICLE}/v1/comment/reply`, formData, withVersion('V3'));
+  const response = await api.post(`${API_BASE_ARTICLE}/v1/comment/reply`, formData, withVersion('V3'));
   return response.data;
 };
 
@@ -504,17 +500,17 @@ const syncArticleStatus = async (articleUuid, status) => {
 
   if (normalized === 'PUBLISHED') {
     console.log('Publishing article...');
-    await postAction(`${BASE_URL_ARTICLE}/v1/article/published/${articleUuid}`);
+    await postAction(`${API_BASE_ARTICLE}/v1/article/published/${articleUuid}`);
     return;
   }
   if (normalized === 'REVIEW') {
     console.log('Setting article to review...');
-    await postAction(`${BASE_URL_ARTICLE}/v1/article/review/${articleUuid}`);
+    await postAction(`${API_BASE_ARTICLE}/v1/article/review/${articleUuid}`);
     return;
   }
   if (normalized === 'DRAFT') {
     console.log('Setting article to draft...');
-    await postAction(`${BASE_URL_ARTICLE}/v1/article/draft/${articleUuid}`);
+    await postAction(`${API_BASE_ARTICLE}/v1/article/draft/${articleUuid}`);
     return;
   }
 };
@@ -524,11 +520,11 @@ export const changeArticleStatus = async (articleUuid, newStatus) => {
     await syncArticleStatus(articleUuid, newStatus);
     return true;
   } catch (error) {
-    throw new Error(extractErrorMessage(error));
+    throw new Error(articleError(error));
   }
 };
 
-export const setArticleBookmark = async (articleUuid) => postAction(`${BASE_URL_ARTICLE}/v1/article/bookmark/${articleUuid}`);
-export const setArticleLike = async (articleUuid) => postAction(`${BASE_URL_ARTICLE}/v1/article/like/${articleUuid}`);
-export const setArticleShare = async (articleUuid) => postAction(`${BASE_URL_ARTICLE}/v1/article/share/${articleUuid}`);
-export const setArticleView = async (articleUuid) => postAction(`${BASE_URL_ARTICLE}/v1/article/view/${articleUuid}`);
+export const setArticleBookmark = async (articleUuid) => postAction(`${API_BASE_ARTICLE}/v1/article/bookmark/${articleUuid}`);
+export const setArticleLike = async (articleUuid) => postAction(`${API_BASE_ARTICLE}/v1/article/like/${articleUuid}`);
+export const setArticleShare = async (articleUuid) => postAction(`${API_BASE_ARTICLE}/v1/article/share/${articleUuid}`);
+export const setArticleView = async (articleUuid) => postAction(`${API_BASE_ARTICLE}/v1/article/view/${articleUuid}`);

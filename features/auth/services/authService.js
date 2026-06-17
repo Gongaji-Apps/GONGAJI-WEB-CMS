@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
 import api from '@/utils/api';
-import { AUTH_CLIENT_ID, AUTH_COOKIE_NAME, BASE_URL_AUTH } from '@/utils/constants';
+import { AUTH_CLIENT_ID, AUTH_COOKIE_NAME, API_BASE_AUTH } from '@/utils/constants';
 
 /**
  * API Version
@@ -52,7 +52,7 @@ export const signin = async (values) => {
   };
 
   const { data } = await api.post(
-    `${BASE_URL_AUTH}/v1/auth-psw/signin`,
+    `${API_BASE_AUTH}/v1/auth-psw/signin`,
     payload,
     withVersion()
   );
@@ -79,7 +79,7 @@ export const signup = async (values) => {
   };
 
   const { data } = await api.post(
-    `${BASE_URL_AUTH}/v1/auth-psw/signup`,
+    `${API_BASE_AUTH}/v1/auth-psw/signup`,
     payload,
     withVersion()
   );
