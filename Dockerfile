@@ -1,33 +1,28 @@
-FROM node:18.17.1-alpine3.18 as builder
+FROM node:18-alpine AS deps
 
 WORKDIR /app
 
 COPY package*.json ./
+RUN npm ci
 
-# RUN npm install -g npm-check-updates
+FROM node:18-alpine AS builder
 
-# RUN ncu -u
+WORKDIR /app
 
-RUN npm install --force
-# RUN npm install
-
-# RUN npm install --strict-peer-deps
-
-# RUN npm update
-
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 RUN npm run build
 
-# FROM nginx:1.23.3-alpine as prod
-# FROM nginx:1.23.3-alpine
+FROM node:18-alpine AS runner
 
-# COPY --from=builder app/.next /usr/share/nginx/html
+WORKDIR /app
 
-# COPY nginx.conf /etc/nginx/conf.d/default.conf
+ENV NODE_ENV=production
+ENV PORT=8080
 
-EXPOSE 80
+COPY --from=builder /app ./
+
+EXPOSE 8080
 
 CMD ["npm", "start"]
-
-# CMD ["nginx", "-g", "daemon off;"]
