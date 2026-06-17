@@ -88,6 +88,19 @@ react-gongaji-cms-backend-master/
 │   │   │   │       │   └── 📄 page.tsx
 │   │   │   │       └── 📄 StoreMerchantView.tsx
 │   │   │   └── 📄 layout.tsx        # Store layout wrapper
+│   │   ├── 📂 qr/                   # QR browse (read-only)
+│   │   │   ├── 📂 books/
+│   │   │   │   ├── 📄 QrBooksList.tsx
+│   │   │   │   └── 📂 view/[book_code]/
+│   │   │   ├── 📂 contents/
+│   │   │   │   ├── 📄 QrContentsList.tsx
+│   │   │   │   └── 📂 view/[content_uuid]/
+│   │   │   ├── 📂 playlist/
+│   │   │   │   └── 📄 QrPlaylistList.tsx
+│   │   │   ├── 📂 series/
+│   │   │   │   └── 📄 QrSeriesList.tsx
+│   │   │   └── 📂 groups/
+│   │   │       └── 📄 QrGroupsList.tsx
 │   │   ├── 📂 blocks/              # Reusable page blocks/templates
 │   │   │   ├── 📄 page.tsx
 │   │   │   ├── 📄 BlocksDemo.tsx
@@ -152,7 +165,12 @@ react-gongaji-cms-backend-master/
 │   │   ├── 📄 layout.tsx          # Main layout wrapper
 │   │   └── 📄 page.tsx            # Root page (redirects to dashboard)
 │   ├── 📂 api/                    # API routes (Next.js App Router)
-│   │   └── 📄 upload.ts           # File upload endpoint
+│   │   ├── 📂 auth/[...path]/     # Proxy → authentication service
+│   │   ├── 📂 article/[...path]/  # Proxy → article service
+│   │   ├── 📂 store/[...path]/    # Proxy → store service
+│   │   ├── 📂 qr/[...path]/       # Proxy → QR service
+│   │   ├── 📂 qr-book/[...path]/  # Proxy → QR book / playlist upstream
+│   │   └── 📄 upload/             # Local upload mock
 │   ├── 📄 layout.tsx              # Root layout configuration
 │   ├── 📄 providers.tsx           # App providers (context, query client)
 │   └── 📄 globals.css             # Global styles
@@ -207,6 +225,13 @@ react-gongaji-cms-backend-master/
 │   │   ├── 📂 services/         # Authentication API services
 │   │   │   └── 📄 authService.js
 │   │   └── 📂 types/            # Authentication TypeScript types
+│   │       └── 📄 index.ts
+│   ├── 📂 qr/                   # QR domain logic (browse only)
+│   │   ├── 📂 components/
+│   │   │   └── 📄 qrListUi.tsx  # QrTitleColumn, qrDataTableProps
+│   │   ├── 📂 services/
+│   │   │   └── 📄 qrService.js
+│   │   └── 📂 types/
 │   │       └── 📄 index.ts
 │   └── 📂 store/                # Store domain logic
 │       ├── 📂 components/       # Store-specific UI components

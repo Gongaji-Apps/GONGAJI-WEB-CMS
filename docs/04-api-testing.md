@@ -600,6 +600,54 @@ export { customRender as render }
 
 ---
 
+## 📱 QR Service — Manual / Postman
+
+QR di CMS **read-only** dan harus selaras dengan koleksi Postman **GONGAJI [PRODUCTION]** → folder **QR**.
+
+### Environment (Postman)
+
+| Variable | Contoh nilai |
+|----------|----------------|
+| `base_url_qr` | `https://gongaji-qr-service-396261734950.asia-southeast2.run.app` |
+| `base_url_qr_book` | Sama dengan `base_url_qr` (kecuali backend memisahkan host) |
+| `token` | Bearer dari login authentication |
+
+### Headers
+
+```http
+Authorization: Bearer {{token}}
+Version: V3
+```
+
+### Checklist endpoint
+
+| Request Postman | Verifikasi CMS |
+|-----------------|----------------|
+| `GET {{base_url_qr}}/v1/book/get` | Menu **QR Books** terisi |
+| `GET {{base_url_qr}}/v1/content/get` (tanpa query) | **QR Contents**, default Semua buku, total ~`data_total` |
+| `GET .../v1/content/get?content_book=X&page=2` | Filter buku + pagination |
+| `GET {{base_url_qr}}/v1/series/get` | **QR Series** |
+| `GET {{base_url_qr}}/v1/group/get` | **QR Groups** |
+| `GET {{base_url_qr_book}}/v1/content/get-playlist?content_book=X` | **QR Playlist** (gagal 404 = backend belum deploy route) |
+
+### CMS vs Postman (dev)
+
+1. Login CMS → cookie `authToken` (setara `{{token}}`).
+2. Buka DevTools → Network: request ke `/api/qr/v1/...`, bukan langsung ke `*.run.app`.
+3. Jika **Network Error** / CORS: pastikan memakai proxy `/api/*` dan host `localhost:3000`.
+4. Setelah ubah `.env.local`: `rm -rf .next && pnpm dev`.
+
+### Troubleshooting
+
+| Gejala | Penyebab umum |
+|--------|----------------|
+| Tabel QR kosong | Belum login / token expired (401) |
+| Postman 200, CMS kosong | Dulu CMS wajib `content_book`; sekarang default tanpa filter — pastikan build terbaru |
+| Playlist 404 | Route `get-playlist` belum ada di upstream production |
+| 401 di Postman | Header `Authorization` atau `Version` belum diset |
+
+---
+
 ## 🎯 Best Practices
 
 ### 1. Test Naming
@@ -661,4 +709,4 @@ const createTestQueryClient = () => new QueryClient({
 
 ---
 
-*API Testing Guide v1.0 - Last Updated: 2025*
+*API Testing Guide v1.1 - Last Updated: June 2026*

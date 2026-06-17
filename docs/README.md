@@ -13,8 +13,8 @@
 - [**05. Quick Start Commands**](./05-quick-start-commands.md) - Essential commands and shortcuts
 
 ### 📡 API & Architecture  
-- [**02. API Endpoints**](./02-api-endpoints.md) - Complete API documentation
-- [**03. Folder Structure**](./03-folder-structure.md) - Clean architecture guide (Updated with new structure)
+- [**02. API Endpoints**](./02-api-endpoints.md) - Complete API documentation (termasuk **QR Service** & proxy `/api/qr`)
+- [**03. Folder Structure**](./03-folder-structure.md) - Clean architecture guide (termasuk `features/qr`, `app/(main)/qr`)
 
 ### 🧪 Testing & Quality
 - [**04. API Testing**](./04-api-testing.md) - Comprehensive testing strategies
@@ -55,6 +55,7 @@ pnpm install && pnpm dev
 - ✅ Kebab-case folder naming (`merchant-banners`, `merchant-categories`)
 - ✅ Feature components in `features/[feature]/components/`
 - ✅ Import patterns updated
+- ✅ **QR module**: browse books/contents/series/groups/playlist via `/api/qr` proxy (selaras Postman)
 
 ---
 
@@ -115,6 +116,7 @@ pnpm install && pnpm dev
 This documentation evolves with the project. After completing tasks:
 
 - [x] Updated folder structure documentation
+- [x] QR API, proxy routes, Postman checklist (June 2026)
 - [x] Added kebab-case naming conventions
 - [x] Updated import patterns
 - [ ] Update templates with new patterns
@@ -124,4 +126,4 @@ This documentation evolves with the project. After completing tasks:
 
 ---
 
-*AI Documentation Hub v1.1 - Last Updated: 2025*
+*AI Documentation Hub v1.2 - Last Updated: June 2026*

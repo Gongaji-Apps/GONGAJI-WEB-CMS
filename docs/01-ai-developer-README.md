@@ -34,9 +34,10 @@ react-gongaji-cms-backend/
 │   │   │   ├── 📂 merchant-banners/     # kebab-case
 │   │   │   ├── 📂 merchant-categories/  # kebab-case
 │   │   │   └── 📂 merchants/
+│   │   ├── 📂 qr/             # QR browse (books, contents, playlist, series, groups)
 │   │   └── 📂 [templates]/    # UI Kit, blocks, pages, utilities
 │   ├── 📂 (full-page)/       # Full-screen pages (auth, landing)
-│   └── 📂 api/                # API routes
+│   └── 📂 api/                # API routes (auth/article/store/qr proxies)
 │
 ├── 📂 components/             # Global components only
 │   ├── 📂 ui/                 # Reusable UI components (ButtonDemo, ChartDemo, dll)
@@ -59,6 +60,10 @@ react-gongaji-cms-backend/
 │   │   ├── 📂 services/       # API calls (articleService.js)
 │   │   └── 📂 types/          # Article types
 │   ├── 📂 auth/               # Authentication logic
+│   ├── 📂 qr/                 # QR service (read-only browse)
+│   │   ├── 📂 components/     # qrListUi.tsx (shared table/title UI)
+│   │   ├── 📂 services/       # qrService.js
+│   │   └── 📂 types/
 │   └── 📂 store/              # Store management logic
 │       ├── 📂 components/
 │       ├── 📂 services/
@@ -73,11 +78,19 @@ react-gongaji-cms-backend/
 
 ## 🔗 External Services
 
-Proyek ini terhubung dengan 4 microservices:
-- **Authentication Service**: `BASE_URL_AUTH`
-- **Article Service**: `BASE_URL_ARTICLE` 
-- **Store Service**: `BASE_URL_STORE`
-- **QR Service**: `BASE_URL_QR`
+Proyek ini terhubung dengan 4 microservices upstream (+ proxy same-origin di browser):
+
+| Service | Env (upstream) | Client path (browser) |
+|---------|----------------|------------------------|
+| Authentication | `NEXT_PUBLIC_BASE_URL_AUTH` | `/api/auth` |
+| Article | `NEXT_PUBLIC_BASE_URL_ARTICLE` | `/api/article` |
+| Store | `NEXT_PUBLIC_BASE_URL_STORE` | `/api/store` |
+| QR | `NEXT_PUBLIC_BASE_URL_QR` | `/api/qr` |
+| QR Book (playlist) | `NEXT_PUBLIC_BASE_URL_QR_BOOK` (default = QR) | `/api/qr-book` |
+
+Implementasi proxy: `lib/upstreamProxy.ts`, routes di `app/api/*/[*path]/route.ts`.
+
+**QR headers wajib** (sama Postman): `Authorization: Bearer {token}`, `Version: V3`.
 
 ## 🛠️ Development Commands
 
@@ -110,7 +123,8 @@ pnpm lint
 ## ⚡ Quick Tips untuk AI
 
 - Selalu gunakan TypeScript types dari `features/*/types/`
-- API calls menggunakan axios instance dari `utils/api.ts`
+- API calls menggunakan axios instance dari `utils/api.ts` (token dari cookie `authToken` atau `NEXT_PUBLIC_STATIC_BEARER_TOKEN`)
+- Service eksternal dipanggil lewat path `/api/*`, bukan URL Cloud Run langsung (hindari CORS)
 - Authentication menggunakan Bearer token dengan cookie fallback
 - Follow existing naming conventions:
   - **Folders**: lowercase, kebab-case untuk multi-word (`merchant-banners`, `merchant-categories`)
@@ -122,6 +136,7 @@ pnpm lint
   ```typescript
   // Feature service
   import { getArticles } from '@/features/articles/services/articleService';
+  import { getQrContents } from '@/features/qr/services/qrService';
   
   // UI component
   import Component from '@/components/ui/ComponentDemo';
@@ -140,15 +155,24 @@ NEXT_PUBLIC_BASE_URL_AUTH=https://gongaji-authentication-service-m3gra3glsq-et.a
 NEXT_PUBLIC_BASE_URL_ARTICLE=https://gongaji-article-service-m3gra3glsq-et.a.run.app
 NEXT_PUBLIC_BASE_URL_STORE=https://gongaji-store-service-m3gra3glsq-et.a.run.app
 NEXT_PUBLIC_BASE_URL_QR=https://gongaji-qr-service-396261734950.asia-southeast2.run.app
+# Opsional; fallback ke BASE_URL_QR jika kosong (Postman: base_url_qr_book)
 NEXT_PUBLIC_BASE_URL_QR_BOOK=https://gongaji-qr-service-396261734950.asia-southeast2.run.app
 NEXT_PUBLIC_STATIC_BEARER_TOKEN=
 NEXT_PUBLIC_AUTH_CLIENT_ID=cms-web
 ```
 
+Setelah ubah env: `rm -rf .next && pnpm dev`. Akses CMS lewat `http://localhost:3000` (bukan `127.0.0.1`) dan login dulu agar token ter-set.
+
 ## 🎯 Current Features
 
 - **Article Management**: CRUD articles dengan categories dan tags
-- **QR Management**: Browse books, contents, series, dan groups dari QR service
+- **QR Management** (read-only, selaras koleksi Postman **QR**):
+  - `/qr/books` — `GET /v1/book/get`
+  - `/qr/contents` — `GET /v1/content/get` (default semua buku + pagination `page`)
+  - `/qr/playlist` — `GET /v1/content/get-playlist` (`content_book` wajib; `content_series`, `content_qrcode` opsional)
+  - `/qr/series` — `GET /v1/series/get`
+  - `/qr/groups` — `GET /v1/group/get`
+  - Detail: `/qr/books/view/[book_code]`, `/qr/contents/view/[content_uuid]`
 - **Category Management**: Manage article categories
 - **Authentication**: Token-based auth dengan cookie support
 - **File Upload**: Image upload untuk articles
@@ -156,4 +180,4 @@ NEXT_PUBLIC_AUTH_CLIENT_ID=cms-web
 
 ---
 
-*AI Developer Guide v1.0 - Last Updated: 2025*
+*AI Developer Guide v1.1 - Last Updated: June 2026*
