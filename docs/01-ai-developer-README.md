@@ -151,12 +151,12 @@ pnpm lint
 ## 🔍 Environment Variables
 
 ```env
-NEXT_PUBLIC_BASE_URL_AUTH=https://gongaji-authentication-service-m3gra3glsq-et.a.run.app
-NEXT_PUBLIC_BASE_URL_ARTICLE=https://gongaji-article-service-m3gra3glsq-et.a.run.app
+NEXT_PUBLIC_BASE_URL_AUTH=https://gongaji-service-authentication-m3gra3glsq-et.a.run.app
+NEXT_PUBLIC_BASE_URL_ARTICLE=https://gongaji-service-article-m3gra3glsq-et.a.run.app
 NEXT_PUBLIC_BASE_URL_STORE=https://gongaji-store-service-m3gra3glsq-et.a.run.app
-NEXT_PUBLIC_BASE_URL_QR=https://gongaji-qr-service-396261734950.asia-southeast2.run.app
+NEXT_PUBLIC_BASE_URL_QR=https://gongaji-service-qr-m3gra3glsq-et.a.run.app
 # Opsional; fallback ke BASE_URL_QR jika kosong (Postman: base_url_qr_book)
-NEXT_PUBLIC_BASE_URL_QR_BOOK=https://gongaji-qr-service-396261734950.asia-southeast2.run.app
+NEXT_PUBLIC_BASE_URL_QR_BOOK=https://gongaji-service-qr-m3gra3glsq-et.a.run.app
 NEXT_PUBLIC_STATIC_BEARER_TOKEN=
 NEXT_PUBLIC_AUTH_CLIENT_ID=cms-web
 ```

@@ -2,7 +2,7 @@
 
 ## 🔐 Authentication Service
 
-Base URL: `https://gongaji-authentication-service-m3gra3glsq-et.a.run.app`
+Base URL: `https://gongaji-service-authentication-m3gra3glsq-et.a.run.app`
 
 ### Login
 ```http
@@ -47,7 +47,7 @@ Authorization: Bearer {token}
 
 ## 📰 Article Service
 
-Base URL: `https://gongaji-article-service-m3gra3glsq-et.a.run.app`
+Base URL: `https://gongaji-service-article-m3gra3glsq-et.a.run.app`
 
 ### Articles
 
@@ -254,7 +254,7 @@ Authorization: Bearer {token}
 ## 📱 QR Service
 
 **Upstream (Postman `{{base_url_qr}}`):**  
-`https://gongaji-qr-service-396261734950.asia-southeast2.run.app`
+`https://gongaji-service-qr-m3gra3glsq-et.a.run.app`
 
 **CMS client base:** `/api/qr` (proxy → upstream)
 

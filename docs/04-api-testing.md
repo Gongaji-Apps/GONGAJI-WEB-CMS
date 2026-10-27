@@ -136,7 +136,7 @@ import { rest } from 'msw'
 
 export const handlers = [
   // Auth handlers
-  rest.post('https://gongaji-authentication-service-m3gra3glsq-et.a.run.app/auth/login', (req, res, ctx) => {
+  rest.post('https://gongaji-service-authentication-m3gra3glsq-et.a.run.app/auth/login', (req, res, ctx) => {
     const { username, password } = req.body as any
     
     if (username === 'admin' && password === 'password') {
@@ -162,7 +162,7 @@ export const handlers = [
   }),
 
   // Article handlers
-  rest.get('https://gongaji-article-service-m3gra3glsq-et.a.run.app/articles', (req, res, ctx) => {
+  rest.get('https://gongaji-service-article-m3gra3glsq-et.a.run.app/articles', (req, res, ctx) => {
     return res(
       ctx.status(200),
       ctx.json({
@@ -236,7 +236,7 @@ describe('ArticleService', () => {
     it('should handle API errors', async () => {
       server.use(
         rest.get(
-          'https://gongaji-article-service-m3gra3glsq-et.a.run.app/articles',
+          'https://gongaji-service-article-m3gra3glsq-et.a.run.app/articles',
           (req, res, ctx) => res(ctx.status(500))
         )
       )
@@ -608,7 +608,7 @@ QR di CMS **read-only** dan harus selaras dengan koleksi Postman **GONGAJI [PROD
 
 | Variable | Contoh nilai |
 |----------|----------------|
-| `base_url_qr` | `https://gongaji-qr-service-396261734950.asia-southeast2.run.app` |
+| `base_url_qr` | `https://gongaji-service-qr-m3gra3glsq-et.a.run.app` |
 | `base_url_qr_book` | Sama dengan `base_url_qr` (kecuali backend memisahkan host) |
 | `token` | Bearer dari login authentication |
 

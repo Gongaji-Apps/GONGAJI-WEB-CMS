@@ -1,7 +1,7 @@
-export const BASE_URL_AUTH = process.env.NEXT_PUBLIC_BASE_URL_AUTH ?? 'https://gongaji-authentication-service-m3gra3glsq-et.a.run.app';
-export const BASE_URL_ARTICLE = process.env.NEXT_PUBLIC_BASE_URL_ARTICLE ?? 'https://gongaji-article-service-m3gra3glsq-et.a.run.app';
+export const BASE_URL_AUTH = process.env.NEXT_PUBLIC_BASE_URL_AUTH ?? 'https://gongaji-service-authentication-m3gra3glsq-et.a.run.app';
+export const BASE_URL_ARTICLE = process.env.NEXT_PUBLIC_BASE_URL_ARTICLE ?? 'https://gongaji-service-article-m3gra3glsq-et.a.run.app';
 export const BASE_URL_STORE = process.env.NEXT_PUBLIC_BASE_URL_STORE ?? 'https://gongaji-store-service-m3gra3glsq-et.a.run.app';
-export const BASE_URL_QR = process.env.NEXT_PUBLIC_BASE_URL_QR ?? 'https://gongaji-qr-service-396261734950.asia-southeast2.run.app';
+export const BASE_URL_QR = process.env.NEXT_PUBLIC_BASE_URL_QR ?? 'https://gongaji-service-qr-m3gra3glsq-et.a.run.app';
 export const BASE_URL_QR_BOOK =
     process.env.NEXT_PUBLIC_BASE_URL_QR_BOOK ?? BASE_URL_QR;
 
