@@ -42,11 +42,11 @@ mkdir -p __tests__/{unit,integration,e2e}/{services,hooks,api,pages}
 ### API Testing
 ```bash
 # Test API endpoints
-curl -X GET "https://gongaji-article-service-m3gra3glsq-et.a.run.app/articles" \
+curl -X GET "https://gongaji-service-article-m3gra3glsq-et.a.run.app/articles" \
   -H "Authorization: Bearer YOUR_TOKEN"
 
 # Test authentication
-curl -X POST "https://gongaji-authentication-service-m3gra3glsq-et.a.run.app/auth/login" \
+curl -X POST "https://gongaji-service-authentication-m3gra3glsq-et.a.run.app/auth/login" \
   -H "Content-Type: application/json" \
   -d '{"client_id":"cms-web","username":"admin","password":"password"}'
 ```
@@ -94,8 +94,8 @@ cp .env.example .env.local
 ### Verify Services
 ```bash
 # Test service connectivity
-curl -I https://gongaji-authentication-service-m3gra3glsq-et.a.run.app/health
-curl -I https://gongaji-article-service-m3gra3glsq-et.a.run.app/health
+curl -I https://gongaji-service-authentication-m3gra3glsq-et.a.run.app/health
+curl -I https://gongaji-service-article-m3gra3glsq-et.a.run.app/health
 curl -I https://gongaji-store-service-m3gra3glsq-et.a.run.app/health
 ```
 
