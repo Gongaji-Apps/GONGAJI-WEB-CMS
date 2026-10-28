@@ -96,7 +96,7 @@ cp .env.example .env.local
 # Test service connectivity
 curl -I https://gongaji-service-authentication-m3gra3glsq-et.a.run.app/health
 curl -I https://gongaji-service-article-m3gra3glsq-et.a.run.app/health
-curl -I https://gongaji-store-service-m3gra3glsq-et.a.run.app/health
+curl -I https://gongaji-service-store-m3gra3glsq-et.a.run.app/health
 ```
 
 ---

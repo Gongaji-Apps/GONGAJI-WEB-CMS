@@ -380,7 +380,7 @@ GET /v1/content/get-playlist?content_book=150KATA&content_qrcode=01
 
 ## 🏪 Store Service
 
-Base URL: `https://gongaji-store-service-m3gra3glsq-et.a.run.app`
+Base URL: `https://gongaji-service-store-m3gra3glsq-et.a.run.app`
 
 ### Upload File
 ```http

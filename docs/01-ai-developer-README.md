@@ -153,7 +153,7 @@ pnpm lint
 ```env
 NEXT_PUBLIC_BASE_URL_AUTH=https://gongaji-service-authentication-m3gra3glsq-et.a.run.app
 NEXT_PUBLIC_BASE_URL_ARTICLE=https://gongaji-service-article-m3gra3glsq-et.a.run.app
-NEXT_PUBLIC_BASE_URL_STORE=https://gongaji-store-service-m3gra3glsq-et.a.run.app
+NEXT_PUBLIC_BASE_URL_STORE=https://gongaji-service-store-m3gra3glsq-et.a.run.app
 NEXT_PUBLIC_BASE_URL_QR=https://gongaji-service-qr-m3gra3glsq-et.a.run.app
 # Opsional; fallback ke BASE_URL_QR jika kosong (Postman: base_url_qr_book)
 NEXT_PUBLIC_BASE_URL_QR_BOOK=https://gongaji-service-qr-m3gra3glsq-et.a.run.app
